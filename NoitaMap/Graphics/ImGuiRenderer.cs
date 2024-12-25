@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using ImGuiNET;
-using NoitaMap.Logging;
 using NoitaMap.Viewer;
 using Silk.NET.Maths;
 using Veldrid;

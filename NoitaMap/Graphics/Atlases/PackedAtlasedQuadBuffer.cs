@@ -1,5 +1,4 @@
 ﻿using System.Numerics;
-using NoitaMap.Viewer;
 using SixLabors.ImageSharp;
 
 namespace NoitaMap.Graphics.Atlases;

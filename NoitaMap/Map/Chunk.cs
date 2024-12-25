@@ -1,11 +1,7 @@
-﻿using System.Buffers;
-using System.Diagnostics;
-using System.Numerics;
+﻿using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
-using NoitaMap.Logging;
-using Vortice.Direct3D;
 
 namespace NoitaMap.Map;
 

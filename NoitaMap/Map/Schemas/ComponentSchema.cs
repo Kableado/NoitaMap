@@ -1,9 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
-using System.Xml;
 using System.Xml.Serialization;
 
-namespace NoitaMap.Map.Components;
+namespace NoitaMap.Map.Schemas;
 
 public partial class ComponentSchema
 {

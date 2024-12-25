@@ -1,6 +1,5 @@
 ﻿using NoitaMap.Graphics;
 using NoitaMap.Graphics.Atlases;
-using NoitaMap.Viewer;
 using Veldrid;
 
 namespace NoitaMap.Map;

@@ -1,14 +1,13 @@
 ﻿using System.Collections.Concurrent;
 using System.Numerics;
 using CommunityToolkit.HighPerformance;
-using NoitaMap.Graphics.Atlases;
 using NoitaMap.Map;
 using NoitaMap.Viewer;
 using Veldrid;
 
-namespace NoitaMap.Graphics;
+namespace NoitaMap.Graphics.Atlases;
 
-public class ChunkAtlasBuffer : AtlasedQuadBuffer, IDisposable
+public class ChunkAtlasBuffer : AtlasedQuadBuffer
 {
     private const int SingleAtlasSize = 8192;
 

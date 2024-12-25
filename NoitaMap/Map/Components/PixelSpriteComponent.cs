@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using CommunityToolkit.HighPerformance;
 using NoitaMap.Graphics;
+using NoitaMap.Graphics.Atlases;
 using NoitaMap.Map.Entities;
 using SixLabors.ImageSharp;
 

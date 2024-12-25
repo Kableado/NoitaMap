@@ -2,6 +2,7 @@
 using System.Reflection;
 using NoitaMap.Logging;
 using NoitaMap.Map.Components;
+using NoitaMap.Map.Schemas;
 
 namespace NoitaMap.Map.Entities;
 

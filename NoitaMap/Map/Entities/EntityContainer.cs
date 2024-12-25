@@ -1,10 +1,9 @@
 ﻿using System.Collections.Concurrent;
-using System.Runtime.CompilerServices;
 using NoitaMap.Graphics;
 using NoitaMap.Graphics.Atlases;
 using NoitaMap.Logging;
 using NoitaMap.Map.Components;
-using NoitaMap.Viewer;
+using NoitaMap.Map.Schemas;
 using Veldrid;
 
 namespace NoitaMap.Map.Entities;

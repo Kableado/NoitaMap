@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using NoitaMap.Compression;
+﻿using NoitaMap.Compression;
 
 namespace NoitaMap.Map;
 

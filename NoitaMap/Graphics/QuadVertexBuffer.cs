@@ -41,7 +41,7 @@ public abstract class QuadVertexBuffer : IDisposable
     }
 }
 
-public unsafe class QuadVertexBuffer<TVert> : QuadVertexBuffer, IDisposable
+public unsafe class QuadVertexBuffer<TVert> : QuadVertexBuffer
     where TVert : unmanaged
 {
     private readonly DeviceBuffer VertexBuffer;

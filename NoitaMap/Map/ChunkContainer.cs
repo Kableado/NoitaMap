@@ -4,6 +4,7 @@ using System.Numerics;
 using System.Runtime.Intrinsics;
 using System.Text.RegularExpressions;
 using NoitaMap.Graphics;
+using NoitaMap.Graphics.Atlases;
 using NoitaMap.Viewer;
 using Silk.NET.Maths;
 using Veldrid;

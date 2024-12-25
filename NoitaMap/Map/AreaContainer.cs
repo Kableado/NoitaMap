@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Numerics;
 using System.Xml;
 using NoitaMap.Graphics;
+using NoitaMap.Graphics.Atlases;
 using NoitaMap.Logging;
 using Veldrid;
 

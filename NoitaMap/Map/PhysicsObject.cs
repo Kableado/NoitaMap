@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using NoitaMap.Graphics.Atlases;
 
 namespace NoitaMap.Map;
 

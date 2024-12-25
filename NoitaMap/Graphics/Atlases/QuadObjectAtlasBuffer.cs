@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using CommunityToolkit.HighPerformance;
-using NoitaMap.Graphics;
-using NoitaMap.Graphics.Atlases;
+
+namespace NoitaMap.Graphics.Atlases;
 
 public class QuadObjectAtlasBuffer<T>(Renderer renderer) : PackedAtlasedQuadBuffer(renderer)
     where T : IAtlasObject

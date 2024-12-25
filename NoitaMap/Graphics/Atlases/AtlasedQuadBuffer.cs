@@ -1,5 +1,4 @@
 ﻿using System.Numerics;
-using NoitaMap.Viewer;
 using Veldrid;
 
 namespace NoitaMap.Graphics.Atlases;

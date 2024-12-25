@@ -1,5 +1,6 @@
-
 using System.Numerics;
+
+namespace NoitaMap.Graphics.Atlases;
 
 public interface IAtlasObject
 {

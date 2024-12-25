@@ -2,7 +2,7 @@ using System.Numerics;
 using System.Xml;
 using System.Xml.Serialization;
 using NoitaMap.Graphics;
-using NoitaMap.Logging;
+using NoitaMap.Graphics.Atlases;
 using NoitaMap.Map.Components;
 using SixLabors.ImageSharp;
 
