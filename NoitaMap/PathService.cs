@@ -100,12 +100,6 @@ public static class PathService
             _worldPath ??= Path.Combine(_savePath, "world");
 
             _dataPath ??= Path.Combine(localLowPath, "Nolla_Games_Noita", "data");
-            
-            if (Path.Exists(_dataPath) == false)
-            {
-                Logger.LogInformation($"Please extract the data.wak using \"Noita.exe -wizard_unpak\" as Steam parameters.");
-                _dataPath = Path.Combine(homePath, ".steam", "steam", "steamapps", "common", "Noita", "data");
-            }
         }
         
         if (_savePath is null)
@@ -128,6 +122,7 @@ public static class PathService
 
         if (!Directory.Exists(DataPath))
         {
+            Logger.LogInformation($"Please extract the data.wak using \"Noita.exe -wizard_unpak\".");
             _dataPath = null;
         }
 
