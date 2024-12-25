@@ -279,7 +279,7 @@ public class SpriteRectEvent
     public int OnFinished { get; set; }
 
     [XmlAttribute(AttributeName = "probability")]
-    public int Probability { get; set; }
+    public double Probability { get; set; }
 }
 
 [XmlRoot(ElementName = "Sprite")]

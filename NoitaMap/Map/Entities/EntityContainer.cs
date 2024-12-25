@@ -73,7 +73,8 @@ public class EntityContainer(Renderer renderer) : IRenderable
 
         int entityCount = reader.ReadBEInt32();
 
-        while (ms.Position < ms.Length)
+        int idEntity = 0;
+        while (idEntity < entityCount && ms.Position < ms.Length)
         {
             Entity entity = new Entity(schema);
 
@@ -98,13 +99,14 @@ public class EntityContainer(Renderer renderer) : IRenderable
             ThreadedEntityQueue.Enqueue(entity);
 
             int thoseFourBytes = reader.ReadBEInt32();
+            idEntity++;
         }
 
-        if (ms.Position != ms.Length)
-        {
-            Logger.LogWarning($"Failed to fully read {path}");
-            throw new Exception();
-        }
+        // if (ms.Position != ms.Length)
+        // {
+        //     Logger.LogWarning($"Failed to fully read {path}");
+        //     throw new Exception();
+        // }
     }
 
     public void Update()

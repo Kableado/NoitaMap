@@ -40,72 +40,78 @@ public class DummyComponent : Component
             switch (type)
             {
                 case "class PixelSprite *":
-                    {
-                        int len = reader.ReadBEInt32();
-                        reader.BaseStream.Position += len;
+                {
+                    int len = reader.ReadBEInt32();
+                    reader.BaseStream.Position += len;
 
-                        //x?
-                        reader.BaseStream.Position += 4;
-                        //y?
-                        reader.BaseStream.Position += 4;
-                        //scalex?
-                        reader.BaseStream.Position += 4;
-                        //scaley?
-                        reader.BaseStream.Position += 4;
+                    //x?
+                    reader.BaseStream.Position += 4;
+                    //y?
+                    reader.BaseStream.Position += 4;
+                    //scalex?
+                    reader.BaseStream.Position += 4;
+                    //scaley?
+                    reader.BaseStream.Position += 4;
 
-                        len = reader.ReadBEInt32();
-                        reader.BaseStream.Position += len;
+                    len = reader.ReadBEInt32();
+                    reader.BaseStream.Position += len;
 
-                        // anchor_x
-                        reader.BaseStream.Position += 4;
-                        // anchor_y
-                        reader.BaseStream.Position += 4;
+                    // anchor_x
+                    reader.BaseStream.Position += 4;
+                    // anchor_y
+                    reader.BaseStream.Position += 4;
 
-                        // 5 ??? bytes
-                        reader.BaseStream.Position += 5;
+                    // 5 ??? bytes
+                    reader.BaseStream.Position += 5;
 
-                        len = reader.ReadBEInt32();
-                        reader.BaseStream.Position += len;
+                    len = reader.ReadBEInt32();
+                    reader.BaseStream.Position += len;
 
-                        // 1 ??? byte
-                        reader.BaseStream.Position += 1;
-                    }
+                    // 1 ??? byte
+                    reader.BaseStream.Position += 1;
+                }
                     break;
                 case "struct UintArrayInline":
-                    {
-                        int len = reader.ReadBEInt32();
-                        reader.BaseStream.Position += len * sizeof(uint);
-                    }
+                {
+                    int len = reader.ReadBEInt32();
+                    reader.BaseStream.Position += len * sizeof(uint);
+                }
                     break;
                 case "class ConfigGun":
                 case "class ConfigGunActionInfo":
                 case "class ConfigExplosion":
+                {
+                    if (Schema.Name != "c8ecfb341d22516067569b04563bff9c")
                     {
-                        if (Schema.Name != "c8ecfb341d22516067569b04563bff9c")
-                        {
-                            throw new NotImplementedException($"No ObjectSchema file for {Schema.Name}");
-                        }
-
-                        ObjectSchema objectSchema = ObjectSchema.GetSchema(Schema.Name, type);
-
-                        foreach (ObjectSchema.ObjectSchemaField field in objectSchema.SchemaFields)
-                        {
-                            if (field.Kind == "Privates")
-                                continue;
-
-                            ProcessField(field.RawType, field.Name, (int)field.Size!);
-                        }
+                        throw new NotImplementedException($"No ObjectSchema file for {Schema.Name}");
                     }
+
+                    ObjectSchema objectSchema = ObjectSchema.GetSchema(Schema.Name, type);
+
+                    foreach (ObjectSchema.ObjectSchemaField field in objectSchema.SchemaFields)
+                    {
+                        if (field.Kind == "Privates")
+                            continue;
+
+                        ProcessField(field.RawType, field.Name, (int)field.Size!);
+                    }
+                }
                     break;
                 case "struct SpriteStains *":
+                {
+                    reader.BaseStream.Position += 6;
+                    string? noitaKey = reader.ReadNoitaString();
+                    if (noitaKey != null)
                     {
-                        reader.BaseStream.Position += 6;
-
-                        foreach (ComponentVar var in Schema.Vars[reader.ReadNoitaString()!])
+                        if (Schema.Vars.TryGetValue(noitaKey, out ComponentVar[]? vars))
                         {
-                            ProcessField(var.Type, var.Name, var.Size);
+                            foreach (ComponentVar var in vars)
+                            {
+                                ProcessField(var.Type, var.Name, var.Size);
+                            }
                         }
                     }
+                }
                     break;
                 case "class ConfigDamagesByType":
                     // -4 for fun
@@ -150,43 +156,46 @@ public class DummyComponent : Component
                 case "std_string":
                 case "std::string":
                 case "class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >":
-                    {
-                        int length = reader.ReadBEInt32();
-                        reader.BaseStream.Position += length;
-                    }
+                {
+                    int length = reader.ReadBEInt32();
+                    reader.BaseStream.Position += length;
+                }
                     break;
                 case "class std::vector<int,class std::allocator<int> >":
-                    {
-                        int length = reader.ReadBEInt32();
-                        reader.BaseStream.Position += length * sizeof(int);
-                    }
+                {
+                    int length = reader.ReadBEInt32();
+                    reader.BaseStream.Position += length * sizeof(int);
+                }
                     break;
                 case "class std::vector<float,class std::allocator<float> >":
-                    {
-                        int length = reader.ReadBEInt32();
-                        reader.BaseStream.Position += length * sizeof(float);
-                    }
+                {
+                    int length = reader.ReadBEInt32();
+                    reader.BaseStream.Position += length * sizeof(float);
+                }
                     break;
                 case "class std::vector<double,class std::allocator<double> >":
-                    {
-                        int length = reader.ReadBEInt32();
-                        reader.BaseStream.Position += length * sizeof(double);
-                    }
+                {
+                    int length = reader.ReadBEInt32();
+                    reader.BaseStream.Position += length * sizeof(double);
+                }
                     break;
-                case "class std::vector<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > >":
+                case
+                    "class std::vector<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > >"
+                    :
                     int vectorLength = reader.ReadBEInt32();
                     for (int i = 0; i < vectorLength; i++)
                     {
                         int stringLength = reader.ReadBEInt32();
                         reader.BaseStream.Position += stringLength;
                     }
+
                     break;
                 // sizeof(PathFindingJumpParams) = 12
                 case "class std::vector<struct PathFindingJumpParams,class std::allocator<struct PathFindingJumpParams> >":
-                    {
-                        int length = reader.ReadBEInt32();
-                        reader.BaseStream.Position += length * 12;
-                    }
+                {
+                    int length = reader.ReadBEInt32();
+                    reader.BaseStream.Position += length * 12;
+                }
                     break;
                 default:
                     throw new NotImplementedException($"??? type at {reader.BaseStream.Position} {type} {ComponentName}.{name}");
@@ -195,12 +204,20 @@ public class DummyComponent : Component
 
         try
         {
-            foreach (ComponentVar componentVar in Schema.Vars[ComponentName])
+            if (Schema.Vars.TryGetValue(ComponentName, out ComponentVar[]? componentVars) == false)
+            {
+                return;
+            }
+
+            foreach (ComponentVar componentVar in componentVars)
             {
                 ProcessField(componentVar.Type, componentVar.Name, componentVar.Size);
             }
         }
-        catch (NotImplementedException) { throw; }
+        catch (NotImplementedException)
+        {
+            throw;
+        }
         catch
         {
             Logger.LogWarning($"Error reading component {this.ComponentName}. Exception at {reader.BaseStream.Position} for \"{ComponentName}\":");

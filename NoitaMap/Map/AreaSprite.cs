@@ -74,6 +74,20 @@ public class AreaEntitySprite : IAtlasObject
             return;
         }
 
+        if (fullGfxPath.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+        {
+            string imageFilePath = fullGfxPath;
+            
+            if (imageFilePath.StartsWith("data/"))
+            {
+                imageFilePath = Path.Combine(PathService.DataPath, imageFilePath.Remove(0, 5));
+            }
+            
+            LoadImage(imageFilePath);
+
+            return;
+        }
+        
         SpriteData spriteData = XmlUtility.LoadXml<SpriteData>(File.ReadAllText(fullGfxPath));
 
         string? imagePath = spriteData.Filename?.ToLower();
@@ -87,7 +101,6 @@ public class AreaEntitySprite : IAtlasObject
         {
             imagePath = Path.Combine(PathService.DataPath, imagePath.Remove(0, 5));
         }
-
 
         SpriteRectAnimation? rectAnimation = spriteData.RectAnimation!.FirstOrDefault(x => spriteData.DefaultAnimation == x.Name);
 
@@ -125,6 +138,30 @@ public class AreaEntitySprite : IAtlasObject
             for (int y = 0; y < height; y++)
             {
                 Rgba32 col = image[x + rectAnimation.PosX, y + rectAnimation.PosY];
+                WorkingTextureData[y, x] = col;
+                TextureHash = HashCode.Combine(TextureHash, col.PackedValue);
+            }
+        }
+
+    }
+    
+    private void LoadImage(string imagePath)
+    {
+        using Image<Rgba32> image = ImageUtility.LoadImage(imagePath);
+
+        int width = image.Width;
+        int height = image.Height;
+
+        WorkingTextureData = new Rgba32[height, width];
+
+        TextureWidth = width;
+        TextureHeight = height;
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Rgba32 col = image[x, y];
                 WorkingTextureData[y, x] = col;
                 TextureHash = HashCode.Combine(TextureHash, col.PackedValue);
             }

@@ -61,7 +61,11 @@ public class Entity
 
         for (int i = 0; i < componentCount; i++)
         {
-            string componentName = reader.ReadNoitaString()!;
+            string? componentName = reader.ReadNoitaString();
+            if (componentName == null)
+            {
+                continue;
+            }
 
             Type? type = assembly.GetType($"NoitaMap.Map.Components.{componentName}");
             try
@@ -83,7 +87,10 @@ public class Entity
                     Components.Add(component);
                 }
             }
-            catch (NotImplementedException) { throw; }
+            catch (NotImplementedException)
+            {
+                throw;
+            }
             catch
             {
                 Logger.LogWarning($"Error decoding component {i}/{componentCount}, {componentName} of {this.FileName}");
