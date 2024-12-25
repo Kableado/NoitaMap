@@ -5,13 +5,13 @@ namespace NoitaMap.Map.Schemas;
 
 public class ObjectSchema
 {
-    private static Dictionary<string, ObjectSchema> SchemaCache = new Dictionary<string, ObjectSchema>();
+    private static readonly Dictionary<string, ObjectSchema> SchemaCache = new Dictionary<string, ObjectSchema>();
 
     public string Name;
 
     public string SchemaName;
 
-    public List<ObjectSchemaField> SchemaFields = new List<ObjectSchemaField>();
+    public readonly List<ObjectSchemaField> SchemaFields;
 
     private ObjectSchema(string schemaHash, string className)
     {

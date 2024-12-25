@@ -37,7 +37,7 @@ public class Renderer : IDisposable
 
     public List<IRenderable> Renderables = new List<IRenderable>();
 
-    private bool PendingResize = false;
+    private bool PendingResize;
 
     private Vector2D<int> PendingNewSize;
 
@@ -98,7 +98,7 @@ public class Renderer : IDisposable
 
         PixelSamplerResourceSet = GraphicsDevice.ResourceFactory.CreateResourceSet(new ResourceSetDescription(PixelSamplerResourceLayout, GraphicsDevice.PointSampler));
 
-        Window.FramebufferResize += (Vector2D<int> newSize) =>
+        Window.FramebufferResize += newSize =>
         {
             PendingNewSize = newSize;
             PendingResize = true;
@@ -122,7 +122,7 @@ public class Renderer : IDisposable
             {
                 CullMode = FaceCullMode.None,
                 FillMode = PolygonFillMode.Solid,
-                FrontFace = FrontFace.Clockwise,
+                FrontFace = FrontFace.Clockwise
             },
             ShaderSet = new ShaderSetDescription()
             {
@@ -144,10 +144,10 @@ public class Renderer : IDisposable
                         new VertexElementDescription("worldMatrix", VertexElementFormat.Float4, VertexElementSemantic.TextureCoordinate),
                         new VertexElementDescription("texPos", VertexElementFormat.Float2, VertexElementSemantic.TextureCoordinate),
                         new VertexElementDescription("texSize", VertexElementFormat.Float2, VertexElementSemantic.TextureCoordinate)
-                    ),
-                ],
+                    )
+                ]
             },
-            ResourceLayouts = [VertexResourceLayout, PixelSamplerResourceLayout, PixelTextureResourceLayout],
+            ResourceLayouts = [VertexResourceLayout, PixelSamplerResourceLayout, PixelTextureResourceLayout,]
         });
     }
 
@@ -246,7 +246,7 @@ public class Renderer : IDisposable
     {
         return GraphicsDevice.ResourceFactory.CreateResourceSet(new ResourceSetDescription()
         {
-            BoundResources = [texture],
+            BoundResources = [texture,],
             Layout = PixelTextureResourceLayout
         });
     }

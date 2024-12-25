@@ -8,7 +8,7 @@ public partial class FastLZ
 {
     static FastLZ()
     {
-        NativeLibrary.SetDllImportResolver(typeof(FastLZ).Assembly, (dllName, assembly, importSearchPath) =>
+        NativeLibrary.SetDllImportResolver(typeof(FastLZ).Assembly, (dllName, _, _) =>
         {
             if (dllName == "fastlz")
             {
@@ -56,7 +56,7 @@ public partial class FastLZ
     public static Span<byte> Compress(int level, Span<byte> input)
     {
         // +10% just in case
-        Span<byte> outputBuffer = new byte[input.Length + (int)((float)input.Length * 0.1f)];
+        Span<byte> outputBuffer = new byte[input.Length + (int)(input.Length * 0.1f)];
 
         int length = fastlz_compress_level(level, ref input.DangerousGetReference(), input.Length, ref outputBuffer.DangerousGetReference());
 

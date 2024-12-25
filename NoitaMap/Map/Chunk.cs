@@ -19,9 +19,9 @@ public class Chunk(Vector2 position)
 
     public Matrix4x4 WorldMatrix = Matrix4x4.Identity;
 
-    public bool ReadyToBeAddedToAtlas = false;
+    public bool ReadyToBeAddedToAtlas;
 
-    public bool ReadyToBeAddedToAtlasAsAir = false;
+    public bool ReadyToBeAddedToAtlasAsAir;
 
     private Cell[,]? CellTable;
 
@@ -42,9 +42,13 @@ public class Chunk(Vector2 position)
         byte[,] unindexedCellTable = new byte[ChunkSize, ChunkSize];
         CellTable = new Cell[ChunkSize, ChunkSize];
 
-        reader.Read(unindexedCellTable.AsSpan());
+        int read = reader.Read(unindexedCellTable.AsSpan());
+        if (read != unindexedCellTable.Length)
+        {
+            throw new FormatException();
+        }
 
-        MaterialMap = [.. MaterialProvider.CreateMaterialMap(ReadMaterialNames(reader))];
+        MaterialMap = [.. MaterialProvider.CreateMaterialMap(ReadMaterialNames(reader)),];
 
         ReverseMaterialMap = new Dictionary<int, int>();
 
@@ -58,7 +62,7 @@ public class Chunk(Vector2 position)
             }
         }
 
-        Rgba32[] customColorsUnindexed = ReadCustomColors(reader, out _);
+        Rgba32[] customColorsUnindexed = ReadCustomColors(reader);
 
         int chunkX = (int)Position.X;
         int chunkY = (int)Position.Y;
@@ -88,7 +92,7 @@ public class Chunk(Vector2 position)
                     cell = cell with
                     {
                         HasCustomColor = true,
-                        CustomColor = col,
+                        CustomColor = col
                     };
 
                     // explicit > implicit
@@ -162,7 +166,7 @@ public class Chunk(Vector2 position)
         {
             for (int y = 0; y < ChunkSize; y++)
             {
-                unindexedCellTable[x, y] = (byte)CellTable![x, y].MaterialIndex;
+                unindexedCellTable[x, y] = CellTable![x, y].MaterialIndex;
 
                 if (CellTable[x, y].HasCustomColor)
                 {
@@ -189,7 +193,7 @@ public class Chunk(Vector2 position)
             writer.WriteNoitaString(material.Name);
         }
 
-        writer.WriteBE(customColors!.Count);
+        writer.WriteBE(customColors.Count);
 
         foreach (Rgba32 col in customColors)
         {
@@ -378,9 +382,9 @@ public class Chunk(Vector2 position)
         return materialNames;
     }
 
-    private Rgba32[] ReadCustomColors(BinaryReader reader, out int materialWorldColorCount)
+    private Rgba32[] ReadCustomColors(BinaryReader reader)
     {
-        materialWorldColorCount = reader.ReadBEInt32();
+        int materialWorldColorCount = reader.ReadBEInt32();
 
         Rgba32[] materialWorldColors = new Rgba32[materialWorldColorCount];
 

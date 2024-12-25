@@ -138,7 +138,7 @@ public class SpriteComponent(Entity entity, string name) : Component(entity, nam
 
     private void LoadImage()
     {
-        if (ImageFile is null || PathService.DataPath is null)
+        if (ImageFile is null)
         {
             return;
         }
@@ -163,7 +163,7 @@ public class SpriteComponent(Entity entity, string name) : Component(entity, nam
                 return;
             }
 
-            SpriteData spriteData = XmlUtility.LoadXml<SpriteData>(File.ReadAllText(path))!;
+            SpriteData spriteData = XmlUtility.LoadXml<SpriteData>(File.ReadAllText(path));
 
             string? imagePath = spriteData.Filename?.ToLower();
 
@@ -174,7 +174,7 @@ public class SpriteComponent(Entity entity, string name) : Component(entity, nam
 
             if (imagePath.StartsWith("data/"))
             {
-                imagePath = Path.Combine(PathService.DataPath!, imagePath.Remove(0, 5));
+                imagePath = Path.Combine(PathService.DataPath, imagePath.Remove(0, 5));
             }
 
             using Image<Rgba32> image = ImageUtility.LoadImage(imagePath);

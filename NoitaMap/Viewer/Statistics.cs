@@ -80,5 +80,5 @@ public enum StatisticMode
 {
     OncePerFrame,
     Sum,
-    Single,
+    Single
 }

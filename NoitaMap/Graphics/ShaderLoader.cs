@@ -35,7 +35,7 @@ public static class ShaderLoader
             VertexFragmentCompilationResult result = SpirvCompilation.CompileVertexFragment(vertexShaderBytes, pixelShaderBytes, compileTarget, new CrossCompileOptions()
             {
                 NormalizeResourceNames = true,
-                InvertVertexOutputY = compileTarget == CrossCompileTarget.HLSL,
+                InvertVertexOutputY = compileTarget == CrossCompileTarget.HLSL
             });
 
             vertexShaderBytes = Encoding.UTF8.GetBytes(result.VertexShader);
@@ -51,7 +51,7 @@ public static class ShaderLoader
 #endif
             ShaderBytes = vertexShaderBytes,
             Stage = ShaderStages.Vertex,
-            EntryPoint = vsEntryPoint,
+            EntryPoint = vsEntryPoint
         });
 
         Shader ps = graphicsDevice.ResourceFactory.CreateShader(new ShaderDescription()
@@ -64,6 +64,6 @@ public static class ShaderLoader
             EntryPoint = psEntryPoint
         });
 
-        return new Shader[] { vs, ps };
+        return [vs, ps,];
     }
 }

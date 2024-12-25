@@ -2,7 +2,7 @@ namespace NoitaMap.Logging;
 
 internal class ConsoleLogger : ILogger
 {
-    private static object ConsoleLogLock = new object();
+    private static readonly object ConsoleLogLock = new object();
 
     public void Log(LogLevel level, string? message)
     {

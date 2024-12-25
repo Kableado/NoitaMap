@@ -5,9 +5,9 @@ namespace NoitaMap.Map;
 
 public class PhysicsObject : IAtlasObject
 {
-    public Vector2 Position;
+    private Vector2 Position;
 
-    public float Rotation;
+    private float Rotation;
 
     public Matrix4x4 WorldMatrix { get; private set; }
 
@@ -60,7 +60,11 @@ public class PhysicsObject : IAtlasObject
         // Rereading everything but uh
         SerializationData = new byte[len];
         reader.BaseStream.Position = pos;
-        reader.Read(SerializationData);
+        int read = reader.Read(SerializationData);
+        if (read != len)
+        {
+            throw new Exception("Invalid serialization data");
+        }
 
         WorldMatrix = Matrix4x4.CreateScale(TextureWidth, TextureHeight, 1f) * (Matrix4x4.CreateRotationZ(Rotation) * Matrix4x4.CreateTranslation(new Vector3(Position, 0f)));
     }

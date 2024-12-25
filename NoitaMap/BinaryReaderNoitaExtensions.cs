@@ -13,7 +13,7 @@ public static class BinaryNoitaExtensions
             return null;
         }
 
-        if (size > 8192*100)
+        if (size > 8192 * 100)
         {
             return null;
         }
@@ -21,7 +21,11 @@ public static class BinaryNoitaExtensions
         // stackalloc a buffer here for extra fast
         Span<byte> stringBuffer = stackalloc byte[size];
 
-        reader.Read(stringBuffer);
+        int read = reader.Read(stringBuffer);
+        if (read != size)
+        {
+            throw new EndOfStreamException();
+        }
 
         return Encoding.UTF8.GetString(stringBuffer);
     }

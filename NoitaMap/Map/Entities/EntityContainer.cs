@@ -37,15 +37,15 @@ namespace NoitaMap.Map.Entities;
 // string tags
 // Fields (see schema files)
 
-public class EntityContainer : IRenderable
+public class EntityContainer(Renderer renderer) : IRenderable
 {
     private readonly ConcurrentQueue<Entity> ThreadedEntityQueue = new ConcurrentQueue<Entity>();
 
-    public readonly List<Entity> Entities = new List<Entity>();
+    public readonly List<Entity> Entities = [];
 
-    private readonly QuadObjectAtlasBuffer<PixelSpriteComponent> PixelSpriteAtlas;
+    private readonly QuadObjectAtlasBuffer<PixelSpriteComponent> PixelSpriteAtlas = new(renderer);
 
-    private readonly QuadObjectAtlasBuffer<SpriteComponent> RegularSpriteAtlas;
+    private readonly QuadObjectAtlasBuffer<SpriteComponent> RegularSpriteAtlas = new(renderer);
 
     public IReadOnlyList<PixelSpriteComponent> PixelSprites => PixelSpriteAtlas.AtlasObjects;
 
@@ -53,70 +53,58 @@ public class EntityContainer : IRenderable
 
     private bool Disposed;
 
-    public EntityContainer(Renderer renderer)
-    {
-        PixelSpriteAtlas = new QuadObjectAtlasBuffer<PixelSpriteComponent>(renderer);
-
-        RegularSpriteAtlas = new QuadObjectAtlasBuffer<SpriteComponent>(renderer);
-    }
-
     public void LoadEntities(string path)
     {
-        byte[]? decompressedData = NoitaFile.LoadCompressedFile(path);
+        byte[] decompressedData = NoitaFile.LoadCompressedFile(path);
 
-        using (MemoryStream ms = new MemoryStream(decompressedData))
+        using MemoryStream ms = new MemoryStream(decompressedData);
+        using BinaryReader reader = new BinaryReader(ms);
+
+        int version = reader.ReadBEInt32();
+
+        if (version != 2)
         {
-            using BinaryReader reader = new BinaryReader(ms);
-
-            int version = reader.ReadBEInt32();
-
-            if (version != 2)
-            {
-                throw new Exception($"Version wasn't 2 (it was {version})");
-            }
-
-            string schemaFileName = reader.ReadNoitaString()!;
-
-            ComponentSchema schema = ComponentSchema.GetSchema(schemaFileName);
-
-            int entityCount = reader.ReadBEInt32();
-
-            while (ms.Position < ms.Length)
-            {
-                Entity entity = new Entity(schema);
-
-                entity.Deserialize(reader);
-
-                foreach (Component component in entity.Components)
-                {
-                    if (component is PixelSpriteComponent pixelSprite)
-                    {
-                        PixelSpriteAtlas.AddAtlasObject(pixelSprite);
-                    }
-
-                    if (component is SpriteComponent sprite)
-                    {
-                        if (!sprite.Tags.Contains("item_unidentified"))
-                        {
-                            RegularSpriteAtlas.AddAtlasObject(sprite);
-                        }
-                    }
-                }
-
-                ThreadedEntityQueue.Enqueue(entity);
-
-                int thoseFourBytes = reader.ReadBEInt32();
-            }
-
-            if (ms.Position != ms.Length)
-            {
-                Logger.LogWarning($"Failed to fully read {path}");
-                throw new Exception();
-            }
+            throw new Exception($"Version wasn't 2 (it was {version})");
         }
 
-        decompressedData = null;
+        string schemaFileName = reader.ReadNoitaString()!;
 
+        ComponentSchema schema = ComponentSchema.GetSchema(schemaFileName);
+
+        int entityCount = reader.ReadBEInt32();
+
+        while (ms.Position < ms.Length)
+        {
+            Entity entity = new Entity(schema);
+
+            entity.Deserialize(reader);
+
+            foreach (Component component in entity.Components)
+            {
+                if (component is PixelSpriteComponent pixelSprite)
+                {
+                    PixelSpriteAtlas.AddAtlasObject(pixelSprite);
+                }
+
+                if (component is SpriteComponent sprite)
+                {
+                    if (!sprite.Tags.Contains("item_unidentified"))
+                    {
+                        RegularSpriteAtlas.AddAtlasObject(sprite);
+                    }
+                }
+            }
+
+            ThreadedEntityQueue.Enqueue(entity);
+
+            int thoseFourBytes = reader.ReadBEInt32();
+        }
+
+        if (ms.Position != ms.Length)
+        {
+            Logger.LogWarning($"Failed to fully read {path}");
+            throw new Exception();
+        }
     }
 
     public void Update()

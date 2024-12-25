@@ -13,9 +13,9 @@ public abstract class PackedAtlasedQuadBuffer : AtlasedQuadBuffer
 
     private readonly List<Rectangle> CachedAtlasRegions = new List<Rectangle>();
 
-    private int CurrentAtlasX = 0;
+    private int CurrentAtlasX;
 
-    private int CurrentAtlasY = 0;
+    private int CurrentAtlasY;
 
     public PackedAtlasedQuadBuffer(Renderer renderer)
         : base(renderer)

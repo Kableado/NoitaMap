@@ -5,103 +5,100 @@ using Silk.NET.Windowing;
 
 namespace NoitaMap.Viewer;
 
-public unsafe static class InputSystem
+public static class InputSystem
 {
-    private static MouseState LastMouseState = new MouseState();
+    private static MouseState _lastMouseState;
 
-    private static MouseState CurrentMouseState = new MouseState();
+    private static MouseState _currentMouseState;
 
-    private static IInputContext? InputContext;
+    private static IInputContext? _inputContext;
 
-    private static IMouse? Mouse;
+    private static IMouse? _mouse;
 
-    private static IKeyboard? Keyboard;
+    private static IKeyboard? _keyboard;
 
     public static void Update(IWindow window)
     {
-        InputContext ??= window.CreateInput();
+        _inputContext ??= window.CreateInput();
 
-        bool setMouse = Mouse is null;
-        Mouse ??= InputContext.Mice[0];
+        bool setMouse = _mouse is null;
+        _mouse ??= _inputContext.Mice[0];
 
-        bool setKeys = Keyboard is null;
-        Keyboard ??= InputContext.Keyboards[0];
+        bool setKeys = _keyboard is null;
+        _keyboard ??= _inputContext.Keyboards[0];
 
-        if (Mouse is not null && setMouse)
+        if (setMouse)
         {
             ImGuiIOPtr io = ImGui.GetIO();
 
-            Mouse.MouseDown += (_, button) =>
+            _mouse.MouseDown += (_, button) =>
             {
                 io.AddMouseButtonEvent(((int)button), true);
             };
 
-            Mouse.MouseUp += (_, button) =>
+            _mouse.MouseUp += (_, button) =>
             {
                 io.AddMouseButtonEvent(((int)button), false);
             };
 
-            Mouse.Scroll += (_, wheel) =>
+            _mouse.Scroll += (_, wheel) =>
             {
                 io.AddMouseWheelEvent(wheel.X, wheel.Y);
             };
         }
 
-        if (Keyboard is not null && setKeys)
+        if (setKeys)
         {
             ImGuiIOPtr io = ImGui.GetIO();
 
-            Keyboard.KeyChar += (_, character) =>
+            _keyboard.KeyChar += (_, character) =>
             {
                 io.AddInputCharacter(character);
             };
 
-            Keyboard.KeyDown += (_, key, y) =>
+            _keyboard.KeyDown += (_, key, _) =>
             {
                 io.AddKeyEvent(KeyTranslator.GetKey(key), true);
             };
 
-            Keyboard.KeyUp += (_, key, y) =>
+            _keyboard.KeyUp += (_, key, _) =>
             {
                 io.AddKeyEvent(KeyTranslator.GetKey(key), false);
             };
         }
 
-        LastMouseState = CurrentMouseState;
+        _lastMouseState = _currentMouseState;
 
-        if (Mouse is not null)
-        {
-            CurrentMouseState.Position = Mouse.Position;
+        _currentMouseState.Position = _mouse.Position;
 
-            CurrentMouseState.LeftDown = Mouse.IsButtonPressed(MouseButton.Left);
-            CurrentMouseState.RightDown = Mouse.IsButtonPressed(MouseButton.Right);
-            CurrentMouseState.MiddleDown = Mouse.IsButtonPressed(MouseButton.Middle);
+        _currentMouseState.LeftDown = _mouse.IsButtonPressed(MouseButton.Left);
+        _currentMouseState.RightDown = _mouse.IsButtonPressed(MouseButton.Right);
+        _currentMouseState.MiddleDown = _mouse.IsButtonPressed(MouseButton.Middle);
 
-            CurrentMouseState.Scroll += Mouse.ScrollWheels[0].Y;
-        }
+        _currentMouseState.Scroll += _mouse.ScrollWheels[0].Y;
     }
 
-    public static bool LeftMouseDown => !ImGui.GetIO().WantCaptureMouse && CurrentMouseState.LeftDown;
+    public static bool LeftMouseDown => !ImGui.GetIO().WantCaptureMouse && _currentMouseState.LeftDown;
 
-    public static bool RightMouseDown => !ImGui.GetIO().WantCaptureMouse && CurrentMouseState.RightDown;
+    public static bool RightMouseDown => !ImGui.GetIO().WantCaptureMouse && _currentMouseState.RightDown;
 
-    public static bool MiddleMouseDown => !ImGui.GetIO().WantCaptureMouse && CurrentMouseState.MiddleDown;
+    public static bool MiddleMouseDown => !ImGui.GetIO().WantCaptureMouse && _currentMouseState.MiddleDown;
 
-    public static bool LeftMousePressed => !ImGui.GetIO().WantCaptureMouse && (CurrentMouseState.LeftDown && !LastMouseState.LeftDown);
+    public static bool LeftMousePressed => !ImGui.GetIO().WantCaptureMouse && (_currentMouseState.LeftDown && !_lastMouseState.LeftDown);
 
-    public static bool RightMousePressed => !ImGui.GetIO().WantCaptureMouse && (CurrentMouseState.RightDown && !LastMouseState.RightDown);
+    public static bool RightMousePressed => !ImGui.GetIO().WantCaptureMouse && (_currentMouseState.RightDown && !_lastMouseState.RightDown);
 
-    public static bool MiddleMousePressed => !ImGui.GetIO().WantCaptureMouse && (CurrentMouseState.MiddleDown && !LastMouseState.MiddleDown);
+    public static bool MiddleMousePressed => !ImGui.GetIO().WantCaptureMouse && (_currentMouseState.MiddleDown && !_lastMouseState.MiddleDown);
 
-    public static bool LeftMouseReleased => !ImGui.GetIO().WantCaptureMouse && (!CurrentMouseState.LeftDown && LastMouseState.LeftDown);
+    public static bool LeftMouseReleased => !ImGui.GetIO().WantCaptureMouse && (!_currentMouseState.LeftDown && _lastMouseState.LeftDown);
 
-    public static bool RightMouseReleased => !ImGui.GetIO().WantCaptureMouse && (!CurrentMouseState.RightDown && LastMouseState.RightDown);
+    public static bool RightMouseReleased => !ImGui.GetIO().WantCaptureMouse && (!_currentMouseState.RightDown && _lastMouseState.RightDown);
 
-    public static bool MiddleMouseReleased => !ImGui.GetIO().WantCaptureMouse && (!CurrentMouseState.MiddleDown && LastMouseState.MiddleDown);
+    public static bool MiddleMouseReleased => !ImGui.GetIO().WantCaptureMouse && (!_currentMouseState.MiddleDown && _lastMouseState.MiddleDown);
 
-    public static Vector2 MousePosition => CurrentMouseState.Position;
+    public static Vector2 MousePosition => _currentMouseState.Position;
 
-    public static float ScrollDelta => ImGui.GetIO().WantCaptureMouse ? 0f : CurrentMouseState.Scroll - LastMouseState.Scroll;
+    public static float ScrollDelta => ImGui.GetIO().WantCaptureMouse ? 0f : _currentMouseState.Scroll - _lastMouseState.Scroll;
 
     private struct MouseState
     {

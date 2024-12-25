@@ -29,26 +29,17 @@ namespace NoitaMap.Map;
 // int length
 // PixelScene[length] scenes
 
-public class WorldPixelScenes : IRenderable
+public class WorldPixelScenes(Renderer renderer) : IRenderable
 {
-    private readonly Renderer Renderer;
-
-    private readonly QuadObjectAtlasBuffer<PixelScene> PixelScenesAtlas;
+    private readonly QuadObjectAtlasBuffer<PixelScene> PixelScenesAtlas = new(renderer);
 
     public IReadOnlyList<PixelScene> PixelScenes => PixelScenesAtlas.AtlasObjects;
 
     private bool Disposed;
 
-    public WorldPixelScenes(Renderer renderer)
-    {
-        Renderer = renderer;
-
-        PixelScenesAtlas = new QuadObjectAtlasBuffer<PixelScene>(Renderer);
-    }
-
     public void Load(string path)
     {
-        byte[]? decompressedData = NoitaFile.LoadCompressedFile(path);
+        byte[] decompressedData = NoitaFile.LoadCompressedFile(path);
 
         using (MemoryStream ms = new MemoryStream(decompressedData))
         {
@@ -61,8 +52,8 @@ public class WorldPixelScenes : IRenderable
                 throw new Exception($"Version wasn't 3 (it was {version})");
             }
 
-            short unknown1 = reader.ReadBEInt16();
-            short unknown2 = reader.ReadBEInt16();
+            reader.ReadBEInt16();
+            reader.ReadBEInt16();
             int length = reader.ReadBEInt32();
 
             for (int i = 0; i < length; i++)
@@ -85,8 +76,6 @@ public class WorldPixelScenes : IRenderable
                 PixelScenesAtlas.AddAtlasObject(pixelScene);
             }
         }
-
-        decompressedData = null;
     }
 
     public void Update()

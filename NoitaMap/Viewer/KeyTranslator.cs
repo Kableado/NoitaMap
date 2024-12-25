@@ -113,7 +113,7 @@ public static class KeyTranslator
             Key.Period => ImGuiKey.Period,
             Key.Slash => ImGuiKey.Slash,
             Key.BackSlash => ImGuiKey.Backslash,
-            _ => ImGuiKey.None,
+            _ => ImGuiKey.None
         };
     }
 }

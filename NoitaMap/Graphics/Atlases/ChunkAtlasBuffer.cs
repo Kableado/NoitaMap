@@ -87,8 +87,7 @@ public class ChunkAtlasBuffer : AtlasedQuadBuffer
             i++;
         }
 
-        i = 0;
-        while (i < MaxBatchSize && ThreadedChunkRerenderQueue.TryDequeue(out Chunk? chunk))
+        while (ThreadedChunkRerenderQueue.TryDequeue(out Chunk? chunk))
         {
             ReplaceChunk(chunk);
         }
@@ -158,7 +157,7 @@ public class ChunkAtlasBuffer : AtlasedQuadBuffer
         {
             Transform = chunk.WorldMatrix,
             TexturePosition = pos,
-            TextureSize = size,
+            TextureSize = size
         });
 
         GraphicsDevice.UpdateTexture(CurrentAtlasTexture, chunk.WorkingTextureData.AsSpan(), (uint)CurrentX, (uint)CurrentY, 0, Chunk.ChunkSize, Chunk.ChunkSize, 1, 0, 0);

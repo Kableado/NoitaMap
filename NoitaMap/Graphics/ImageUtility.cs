@@ -11,6 +11,6 @@ public static class ImageUtility
 
         configuration.PreferContiguousImageBuffers = true;
 
-        return Image.Load<Rgba32>(new DecoderOptions() { Configuration = configuration }, path);
+        return Image.Load<Rgba32>(new DecoderOptions() { Configuration = configuration, }, path);
     }
 }

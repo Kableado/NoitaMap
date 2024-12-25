@@ -11,31 +11,31 @@ public partial class ViewerDisplay
 {
     private bool ShowMetrics = true;
 
-    private bool ShowDebugger = false;
+    private bool ShowDebugger;
 
-    private bool DebugDrawChunkBorders = false;
+    private bool DebugDrawChunkBorders;
 
-    private bool DebugDrawPhysicsObjectBorders = false;
+    private bool DebugDrawPhysicsObjectBorders;
 
-    private bool DebugDrawPixelSceneBorders = false;
+    private bool DebugDrawPixelSceneBorders;
 
-    private bool DebugDrawPixelSpriteComponentBorders = false;
+    private bool DebugDrawPixelSpriteComponentBorders;
 
-    private bool DebugDrawSpriteComponentBorders = false;
+    private bool DebugDrawSpriteComponentBorders;
 
-    private bool DebugDrawCurrentCell = false;
+    private bool DebugDrawCurrentCell;
 
-    private bool DebugPaint = false;
+    private bool DebugPaint;
 
     private float BrushSize = 32f;
 
     private string MaterialName = "";
 
-    private bool ShowSearch = false;
+    private bool ShowSearch;
 
-    private HashSet<Chunk> ModifiedChunks = new HashSet<Chunk>();
+    private readonly HashSet<Chunk> ModifiedChunks = [];
 
-    private bool DebugDrawAreaEntityBorders = false;
+    private bool DebugDrawAreaEntityBorders;
 
     private string SearchText = "";
 
@@ -132,7 +132,7 @@ public partial class ViewerDisplay
 
                         if (!ChunkContainer.MaterialProvider.Material.TryGetValue(MaterialName, out _) && MaterialName.Length > 0)
                         {
-                            (string closestMat, _) = ChunkContainer.MaterialProvider.Material.OrderByDescending(x => x.Key.CompareTo(MaterialName)).FirstOrDefault();
+                            (string closestMat, _) = ChunkContainer.MaterialProvider.Material.OrderByDescending(x => String.Compare(x.Key, MaterialName, StringComparison.Ordinal)).FirstOrDefault();
 
                             ImGui.TextDisabled(closestMat);
                         }
@@ -251,14 +251,10 @@ public partial class ViewerDisplay
                 Vector2 p2 = Vector2.Transform(Vector2.One, mat);
                 Vector2 p3 = Vector2.Transform(Vector2.UnitX, mat);
 
-                if (pixelSprite.ImageFile is null)
-                {
-                    drawList.AddQuad(p0, p1, p2, p3, Color.Red.ToPixel<Rgba32>().PackedValue, 4f);
-                }
-                else
-                {
-                    drawList.AddQuad(p0, p1, p2, p3, Color.Lime.ToPixel<Rgba32>().PackedValue, 4f);
-                }
+                drawList.AddQuad(p0, p1, p2, p3,
+                    pixelSprite.ImageFile is null 
+                        ? Color.Red.ToPixel<Rgba32>().PackedValue 
+                        : Color.Lime.ToPixel<Rgba32>().PackedValue, 4f);
             }
         }
 
@@ -423,9 +419,9 @@ public partial class ViewerDisplay
                 }
 
                 bool found =
-                (entity.Name?.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ?? false)
-                || (entity.Tags?.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ?? false)
-                || (entity.FileName?.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ?? false);
+                (entity.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
+                || (entity.Tags.Contains(SearchText, StringComparison.OrdinalIgnoreCase) )
+                || (entity.FileName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) );
 
                 if (found)
                 {

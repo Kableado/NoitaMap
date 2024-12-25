@@ -116,13 +116,13 @@ public class PixelSpriteComponent(Entity entity, string name) : Component(entity
         }
         else
         {
-            if (ImageFile is not null && PathService.DataPath is not null)
+            if (ImageFile is not null)
             {
                 string? path = null;
 
                 if (ImageFile.StartsWith("data/"))
                 {
-                    path = Path.Combine(PathService.DataPath!, ImageFile.Remove(0, 5));
+                    path = Path.Combine(PathService.DataPath, ImageFile.Remove(0, 5));
                 }
 
                 if (path is not null)

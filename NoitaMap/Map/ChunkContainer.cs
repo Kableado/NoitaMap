@@ -79,7 +79,7 @@ public partial class ChunkContainer : IRenderable
 
         PhysicsObjectFramebuffer = Renderer.GraphicsDevice.ResourceFactory.CreateFramebuffer(new FramebufferDescription()
         {
-            ColorTargets = [new FramebufferAttachmentDescription(PhysicsObjectFramebufferTexture, 0)]
+            ColorTargets = [new FramebufferAttachmentDescription(PhysicsObjectFramebufferTexture, 0),]
         });
         PhysicsObjectFramebuffer.Name = nameof(PhysicsObjectFramebuffer);
 
@@ -116,7 +116,7 @@ public partial class ChunkContainer : IRenderable
 
         StatisticTimer loadChunkTimer = new StatisticTimer("Load Chunk").Begin();
 
-        byte[]? decompressedData = NoitaFile.LoadCompressedFile(chunkFilePath);
+        byte[] decompressedData = NoitaFile.LoadCompressedFile(chunkFilePath);
 
         using (MemoryStream ms = new MemoryStream(decompressedData))
         {
@@ -135,8 +135,6 @@ public partial class ChunkContainer : IRenderable
         }
 
         loadChunkTimer.End(StatisticMode.Sum);
-
-        decompressedData = null;
 
         ChunkAtlas.AddChunk(chunk);
 
@@ -235,7 +233,7 @@ public partial class ChunkContainer : IRenderable
 
         PhysicsObjectFramebuffer = Renderer.GraphicsDevice.ResourceFactory.CreateFramebuffer(new FramebufferDescription()
         {
-            ColorTargets = [new FramebufferAttachmentDescription(PhysicsObjectFramebufferTexture, 0)]
+            ColorTargets = [new FramebufferAttachmentDescription(PhysicsObjectFramebufferTexture, 0),]
         });
 
         PhysicsObjectResourceSet = Renderer.CreateTextureBinding(PhysicsObjectFramebufferTexture);

@@ -27,7 +27,7 @@ public class AreaContainer : IRenderable
 
     public void LoadArea(string path)
     {
-        byte[]? decompressedData = NoitaFile.LoadCompressedFile(path);
+        byte[] decompressedData = NoitaFile.LoadCompressedFile(path);
 
         using (MemoryStream ms = new MemoryStream(decompressedData))
         {
@@ -81,17 +81,10 @@ public class AreaContainer : IRenderable
                 }
             }
         }
-
-        decompressedData = null;
     }
 
     private void LoadEntitySprite(string xmlFilePath, Vector2 pos)
     {
-        if (PathService.DataPath is null)
-        {
-            return;
-        }
-
         string caselessBaseXmlFilePath = xmlFilePath.ToLower();
 
         string? fullXmlPath = null;

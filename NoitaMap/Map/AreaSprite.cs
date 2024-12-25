@@ -45,11 +45,6 @@ public class AreaEntitySprite : IAtlasObject
 
     private void LoadSpriteComponent(XmlNode spriteComponentNode)
     {
-        if (PathService.DataPath is null)
-        {
-            return;
-        }
-
         SpriteComponentData spriteComponentData = XmlUtility.LoadXml<SpriteComponentData>(spriteComponentNode.OuterXml);
 
         if (spriteComponentData.HasSpecialScale != 0)
@@ -90,7 +85,7 @@ public class AreaEntitySprite : IAtlasObject
 
         if (imagePath.StartsWith("data/"))
         {
-            imagePath = Path.Combine(PathService.DataPath!, imagePath.Remove(0, 5));
+            imagePath = Path.Combine(PathService.DataPath, imagePath.Remove(0, 5));
         }
 
 

@@ -8,11 +8,11 @@ public partial class ComponentSchema
 {
     private static readonly Regex ILoveNollaGames = GenerateCoolRegex();
 
-    private static Dictionary<string, ComponentSchema> SchemaCache = new Dictionary<string, ComponentSchema>();
+    private static readonly Dictionary<string, ComponentSchema> SchemaCache = new Dictionary<string, ComponentSchema>();
 
     public readonly string Name;
 
-    public Dictionary<string, ComponentVar[]> Vars = new Dictionary<string, ComponentVar[]>();
+    public readonly Dictionary<string, ComponentVar[]> Vars;
 
     private ComponentSchema(string name)
     {
@@ -24,9 +24,9 @@ public partial class ComponentSchema
         // We must replace < and > with &lt; and &gt; in order to actually parse it
         text = ILoveNollaGames.Replace(text, x => x.Value.Replace("<", "&lt;").Replace(">", "&gt;"));
 
-        ComponentSchemaRoot schema = XmlUtility.LoadXml<ComponentSchemaRoot>(text)!;
+        ComponentSchemaRoot schema = XmlUtility.LoadXml<ComponentSchemaRoot>(text);
 
-        Vars = schema.Components.ToDictionary(x => x.Name, x => x.Vars.Select(x => new ComponentVar(x.Name, x.Type, x.Size)).ToArray());
+        Vars = schema.Components.ToDictionary(element => element.Name, element => element.Vars.Select(x => new ComponentVar(x.Name, x.Type, x.Size)).ToArray());
     }
 
     public static ComponentSchema GetSchema(string name)

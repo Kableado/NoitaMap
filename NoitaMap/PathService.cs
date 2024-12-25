@@ -4,16 +4,20 @@ namespace NoitaMap;
 
 public static class PathService
 {
+    private static string? _savePath;
+    private static string? _worldPath;
+    private static string? _dataPath;
+
     /// <summary>
     /// Returns the directory that the application is in. 
     /// </summary>
     public static string ApplicationPath { get; }
 
-    public static string SavePath { get; private set; } = null!;
+    private static string SavePath => _savePath ?? string.Empty;
 
-    public static string WorldPath { get; private set; } = null!;
+    public static string WorldPath => _worldPath ?? string.Empty;
 
-    public static string? DataPath { get; private set; }
+    public static string DataPath => _dataPath ?? string.Empty;
 
     static PathService()
     {
@@ -36,7 +40,7 @@ public static class PathService
                 }
 
                 i++;
-                SavePath = args[i];
+                _savePath = args[i];
             }
             else if (arg == "-w" || arg == "--world")
             {
@@ -48,7 +52,7 @@ public static class PathService
                 }
 
                 i++;
-                WorldPath = args[i];
+                _worldPath = args[i];
             }
             else if (arg == "-d" || arg == "--data")
             {
@@ -60,7 +64,7 @@ public static class PathService
                 }
 
                 i++;
-                DataPath = args[i];
+                _dataPath = args[i];
             }
             else if (arg == "-h" || arg == "-?" || arg == "--help")
             {
@@ -79,23 +83,23 @@ public static class PathService
         {
             string localLowPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "Low";
 
-            SavePath ??= Path.Combine(localLowPath, "Nolla_Games_Noita", "save00");
+            _savePath ??= Path.Combine(localLowPath, "Nolla_Games_Noita", "save00");
 
-            WorldPath ??= Path.Combine(SavePath, "world");
+            _worldPath ??= Path.Combine(_savePath, "world");
 
-            DataPath ??= Path.Combine(localLowPath, "Nolla_Games_Noita", "data");
+            _dataPath ??= Path.Combine(localLowPath, "Nolla_Games_Noita", "data");
         }
 
-        if (SavePath is null)
+        if (_savePath is null)
         {
             Logger.LogCritical("Please specify a path for your save: --save \"/path/to/your/save\"");
             throw new Exception("No Save Path Specified");
         }
         else
         {
-            WorldPath ??= Path.Combine(SavePath, "world");
+            _worldPath ??= Path.Combine(_savePath, "world");
 
-            DataPath ??= Path.Combine(Path.Combine(SavePath, "../data"));
+            _dataPath ??= Path.Combine(Path.Combine(_savePath, "../data"));
         }
 
         if (WorldPath is null)
@@ -106,7 +110,7 @@ public static class PathService
 
         if (!Directory.Exists(DataPath))
         {
-            DataPath = null;
+            _dataPath = null;
         }
 
         Logger.LogInformation($"SavePath: \"{SavePath}\"");

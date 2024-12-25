@@ -14,7 +14,7 @@ public class ImGuiRenderer : IRenderable
 
     private Vector2 WindowSize;
 
-    private bool FrameBegun = false;
+    private bool FrameBegun;
 
     private DeviceBuffer VertexBuffer;
 
@@ -44,13 +44,13 @@ public class ImGuiRenderer : IRenderable
 
     private readonly Dictionary<nint, ResourceSetInfo> ViewsById = new Dictionary<nint, ResourceSetInfo>();
 
-    private readonly List<IDisposable> OwnedResources = new List<IDisposable>();
+    private readonly List<IDisposable> OwnedResources = [];
 
     private nint TextureId = 100;
 
     private readonly nint FontAtlasId = 1;
 
-    private bool Disposed = false;
+    private bool Disposed;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public ImGuiRenderer(GraphicsDevice graphicsDevice, OutputDescription outputDescription, int width, int height)
@@ -84,7 +84,7 @@ public class ImGuiRenderer : IRenderable
         GraphicsDevice.WaitForIdle();
 
         FontTexture?.Dispose();
-        FontTexture = GraphicsDevice.ResourceFactory.CreateTexture(TextureDescription.Texture2D((uint)width, (uint)height, 1, 1, Veldrid.PixelFormat.R8G8B8A8UNorm, TextureUsage.Sampled));
+        FontTexture = GraphicsDevice.ResourceFactory.CreateTexture(TextureDescription.Texture2D((uint)width, (uint)height, 1, 1, PixelFormat.R8G8B8A8UNorm, TextureUsage.Sampled));
         FontTexture.Name = "ImGui.NET Font Texture";
         GraphicsDevice.UpdateTexture(FontTexture, (nint)pixels, (uint)(4 * width * height), 0, 0, 0, (uint)width, (uint)height, 1, 0, 0);
 
@@ -343,13 +343,13 @@ public class ImGuiRenderer : IRenderable
         VertexShader = shaders[0];
         PixelShader = shaders[1];
 
-        VertexLayoutDescription[] vertexLayouts = new VertexLayoutDescription[]
-        {
-                new VertexLayoutDescription(
+        VertexLayoutDescription[] vertexLayouts =
+        [
+            new VertexLayoutDescription(
                     new VertexElementDescription("in_position", VertexElementSemantic.Position, VertexElementFormat.Float2),
                     new VertexElementDescription("in_texCoord", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2),
                     new VertexElementDescription("in_color", VertexElementSemantic.Color, VertexElementFormat.Byte4Norm))
-        };
+        ];
 
         Layout = factory.CreateResourceLayout(new ResourceLayoutDescription(
             new ResourceLayoutElementDescription("ProjectionMatrixBuffer", ResourceKind.UniformBuffer, ShaderStages.Vertex),
@@ -366,8 +366,8 @@ public class ImGuiRenderer : IRenderable
             PrimitiveTopology.TriangleList,
             new ShaderSetDescription(
                 vertexLayouts,
-                new[] { VertexShader, PixelShader }),
-            new ResourceLayout[] { Layout, TextureLayout },
+                [VertexShader, PixelShader,]),
+            [Layout, TextureLayout,],
             outputDescription,
             ResourceBindingModel.Default);
         ImGuiPipeline = factory.CreateGraphicsPipeline(ref pd);
@@ -460,7 +460,7 @@ public class ImGuiRenderer : IRenderable
         using Stream s = typeof(ImGuiRenderer).Assembly.GetManifestResourceStream(resourceName)!;
 
         byte[] ret = new byte[s.Length];
-        s.Read(ret, 0, (int)s.Length);
+        s.ReadExactly(ret, 0, (int)s.Length);
 
         return ret;
     }

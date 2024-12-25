@@ -29,9 +29,9 @@ public partial class ViewerDisplay : IDisposable
 
     private ImGuiRenderer ImGuiRenderer;
 
-    private int TotalChunkCount = 0;
+    private int TotalChunkCount;
 
-    private int LoadedChunks = 0;
+    private int LoadedChunks;
 
     private bool Disposed;
 
@@ -57,7 +57,7 @@ public partial class ViewerDisplay : IDisposable
 
         Window.Load += Load;
 
-        Window.Render += (double d) =>
+        Window.Render += _ =>
         {
             DeltaTimeWatch.Stop();
 
@@ -69,11 +69,11 @@ public partial class ViewerDisplay : IDisposable
 
             ImGuiRenderer!.BeginFrame(deltaTime);
 
-            Renderer!.Update();
+            Renderer?.Update();
 
             DrawUI();
 
-            Renderer!.Render();
+            Renderer?.Render();
         };
 
         Logger.LogInformation("Running Sdl window");
@@ -87,7 +87,7 @@ public partial class ViewerDisplay : IDisposable
         {
             SyncToVerticalBlank = true,
             HasMainSwapchain = true,
-            ResourceBindingModel = ResourceBindingModel.Improved,
+            ResourceBindingModel = ResourceBindingModel.Improved
         };
 
         Logger.LogInformation("Creating Veldrid GraphisDevice");
@@ -104,7 +104,7 @@ public partial class ViewerDisplay : IDisposable
             EntityContainer = new EntityContainer(Renderer),
             AreaContainer = new AreaContainer(Renderer),
             ChunkContainer = new ChunkContainer(Renderer),
-            ImGuiRenderer = new ImGuiRenderer(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription, Window.Size.X, Window.Size.Y),
+            ImGuiRenderer = new ImGuiRenderer(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription, Window.Size.X, Window.Size.Y)
         ];
 
         Renderer.Renderables.AddRange<IRenderable>(renderables);
@@ -127,16 +127,16 @@ public partial class ViewerDisplay : IDisposable
 
             TotalChunkCount = chunkPaths.Length;
 
-            int ChunksPerThread = (int)MathF.Ceiling((float)chunkPaths.Length / (float)Math.Max(Environment.ProcessorCount - 2, 1));
+            int chunksPerThread = (int)MathF.Ceiling(chunkPaths.Length / (float)Math.Max(Environment.ProcessorCount - 2, 1));
 
             // Split up all of the paths into a collection of (at most) ChunksPerThread paths for each thread to process
             // This is so that each thread can process ChunksPerThread chunks at once, rather than having too many threads
-            string[][] threadedChunkPaths = new string[(int)MathF.Ceiling((float)chunkPaths.Length / (float)ChunksPerThread)][];
+            string[][] threadedChunkPaths = new string[(int)MathF.Ceiling(chunkPaths.Length / (float)chunksPerThread)][];
 
             int total = 0;
             for (int i = 0; i < threadedChunkPaths.Length; i++)
             {
-                int chunkCountForThread = Math.Min(chunkPaths.Length - total, ChunksPerThread);
+                int chunkCountForThread = Math.Min(chunkPaths.Length - total, chunksPerThread);
                 threadedChunkPaths[i] = new string[chunkCountForThread];
 
                 for (int j = 0; j < chunkCountForThread; j++)
@@ -149,13 +149,13 @@ public partial class ViewerDisplay : IDisposable
 
             Logger.LogInformation($"Starting load of {chunkPaths.Length} chunks");
 
-            Parallel.ForEach(threadedChunkPaths, chunkPaths =>
+            Parallel.ForEach(threadedChunkPaths, chunkPathsAux =>
             {
-                for (int i = 0; i < chunkPaths.Length; i++)
+                for (int i = 0; i < chunkPathsAux.Length; i++)
                 {
                     try
                     {
-                        ChunkContainer.LoadChunk(chunkPaths[i]);
+                        ChunkContainer.LoadChunk(chunkPathsAux[i]);
                     }
                     catch (Exception ex)
                     {

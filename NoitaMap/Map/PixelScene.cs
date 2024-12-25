@@ -50,11 +50,6 @@ public class PixelScene : IAtlasObject
 
     public int TextureHash { get; set; }
 
-    public PixelScene()
-    {
-
-    }
-
     public void Deserialize(BinaryReader reader)
     {
         X = reader.ReadBEInt32();
@@ -97,7 +92,7 @@ public class PixelScene : IAtlasObject
         {
             if (MaterialFilename.StartsWith("data/"))
             {
-                path = Path.Combine(PathService.DataPath!, MaterialFilename.Remove(0, 5));
+                path = Path.Combine(PathService.DataPath, MaterialFilename.Remove(0, 5));
             }
 
             if (File.Exists(path))
