@@ -2,8 +2,8 @@
 using ImGuiNET;
 using NoitaMap.Graphics;
 using NoitaMap;
-using NoitaMap.Map.Components;
-using NoitaMap.Map.Entities;
+using NoitaMap.Components;
+using NoitaMap.Entities;
 using SixLabors.ImageSharp;
 
 namespace NoitaMap.Viewer;
