@@ -1,5 +1,5 @@
-
 using System.Numerics;
+using SixLabors.ImageSharp.PixelFormats;
 
 public interface IAtlasObject
 {

@@ -2,7 +2,7 @@
 using System.Numerics;
 using CommunityToolkit.HighPerformance;
 using NoitaMap.Graphics.Atlases;
-using NoitaMap.Map;
+using NoitaMap;
 using NoitaMap.Viewer;
 using Veldrid;
 

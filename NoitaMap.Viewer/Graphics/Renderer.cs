@@ -1,7 +1,7 @@
 using System.Numerics;
 using ImGuiNET;
 using NoitaMap.Logging;
-using NoitaMap.Map;
+using NoitaMap;
 using NoitaMap.Viewer;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
