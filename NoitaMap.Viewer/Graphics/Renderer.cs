@@ -131,17 +131,17 @@ public class Renderer : IDisposable
                 [
                     new VertexLayoutDescription
                     (
-                        new VertexElementDescription("position", VertexElementFormat.Float3, VertexElementSemantic.TextureCoordinate),
+                        new VertexElementDescription("position", VertexElementFormat.Float3, VertexElementSemantic.Position), // Changed semantic
                         new VertexElementDescription("uv", VertexElementFormat.Float2, VertexElementSemantic.TextureCoordinate)
                     ),
                     new VertexLayoutDescription
                     (
                         stride: 80,
-                        instanceStepRate: 6,
-                        new VertexElementDescription("worldMatrix", VertexElementFormat.Float4, VertexElementSemantic.TextureCoordinate),
-                        new VertexElementDescription("worldMatrix", VertexElementFormat.Float4, VertexElementSemantic.TextureCoordinate),
-                        new VertexElementDescription("worldMatrix", VertexElementFormat.Float4, VertexElementSemantic.TextureCoordinate),
-                        new VertexElementDescription("worldMatrix", VertexElementFormat.Float4, VertexElementSemantic.TextureCoordinate),
+                        instanceStepRate: 1, // Changed from 6 to 1
+                        new VertexElementDescription("worldMatrix_row1", VertexElementFormat.Float4, VertexElementSemantic.TextureCoordinate), // Name changed for clarity
+                        new VertexElementDescription("worldMatrix_row2", VertexElementFormat.Float4, VertexElementSemantic.TextureCoordinate), // Name changed for clarity
+                        new VertexElementDescription("worldMatrix_row3", VertexElementFormat.Float4, VertexElementSemantic.TextureCoordinate), // Name changed for clarity
+                        new VertexElementDescription("worldMatrix_row4", VertexElementFormat.Float4, VertexElementSemantic.TextureCoordinate), // Name changed for clarity
                         new VertexElementDescription("texPos", VertexElementFormat.Float2, VertexElementSemantic.TextureCoordinate),
                         new VertexElementDescription("texSize", VertexElementFormat.Float2, VertexElementSemantic.TextureCoordinate)
                     ),

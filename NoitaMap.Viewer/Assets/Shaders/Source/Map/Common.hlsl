@@ -5,11 +5,11 @@ struct VS_INPUT
     
     // --- Instance data --- ///
     
-    float4x4 worldMatrix : INSTANCE0;
+    float4x4 worldMatrix : TEXCOORD1; // Was INSTANCE0
     
     // Texture information for calculating texture atlas uv for instanced data
-    float2 texPos : INSTANCE1;
-    float2 texSize : INSTANCE2;
+    float2 texPos : TEXCOORD5; // Was INSTANCE1
+    float2 texSize : TEXCOORD6; // Was INSTANCE2
 };
 
 struct PS_INPUT
