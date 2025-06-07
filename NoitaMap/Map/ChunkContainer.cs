@@ -45,7 +45,7 @@ public partial class ChunkContainer : IRenderable
 
     private readonly QuadVertexBuffer<Vertex> VertexBuffer;
 
-    public bool ForceNoFrambuffer = false;
+    public bool ForceNoFrambuffer = true;
 
     private bool Disposed;
 

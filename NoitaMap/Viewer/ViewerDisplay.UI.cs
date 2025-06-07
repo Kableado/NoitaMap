@@ -9,11 +9,11 @@ namespace NoitaMap.Viewer;
 
 public partial class ViewerDisplay
 {
-    private bool ShowMetrics = true;
+    private bool ShowMetrics = false;
 
-    private bool ShowDebugger;
+    private bool ShowDebugger = false;
 
-    private bool DebugDrawChunkBorders;
+    private bool DebugDrawChunkBorders = true;
 
     private bool DebugDrawPhysicsObjectBorders;
 
@@ -21,9 +21,9 @@ public partial class ViewerDisplay
 
     private bool DebugDrawPixelSpriteComponentBorders;
 
-    private bool DebugDrawSpriteComponentBorders;
+    private bool DebugDrawSpriteComponentBorders = true;
 
-    private bool DebugDrawCurrentCell;
+    private bool DebugDrawCurrentCell = true;
 
     private bool DebugPaint;
 
@@ -35,7 +35,7 @@ public partial class ViewerDisplay
 
     private readonly HashSet<Chunk> ModifiedChunks = [];
 
-    private bool DebugDrawAreaEntityBorders;
+    private bool DebugDrawAreaEntityBorders = true;
 
     private string SearchText = "";
 
