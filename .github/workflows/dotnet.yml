@@ -12,6 +12,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Set execute permission for dxc
+        run: chmod +x NoitaMap.Viewer/dxc/linux/dxc
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -22,7 +24,10 @@ jobs:
           dotnet restore NoitaMap.Cli/NoitaMap.Cli.csproj
           dotnet restore NoitaMap.Viewer/NoitaMapViewer.csproj
       - name: Build
-        run: dotnet build NoitaMap/NoitaMap.csproj --no-restore 
+        run: |
+          dotnet build NoitaMap.Cli/NoitaMap.Cli.csproj --no-restore
+          dotnet build NoitaMap.Viewer/NoitaMapViewer.csproj --no-restore
+          dotnet build NoitaMap/NoitaMap.csproj --no-restore
       - name: Publish
         run: |
           dotnet publish NoitaMap.Cli/NoitaMap.Cli.csproj -r win-x64 -p:PublishSingleFile=true --self-contained true -o ~/win-x64
