@@ -17,13 +17,18 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: Restore dependencies
-        run: dotnet restore NoitaMap/NoitaMap.csproj
+        run: |
+          dotnet restore NoitaMap/NoitaMap.csproj
+          dotnet restore NoitaMap.Cli/NoitaMap.Cli.csproj
+          dotnet restore NoitaMap.Viewer/NoitaMapViewer.csproj
       - name: Build
         run: dotnet build NoitaMap/NoitaMap.csproj --no-restore 
       - name: Publish
         run: |
-          dotnet publish NoitaMap/NoitaMap.csproj -r win-x64 -p:PublishSingleFile=true --self-contained true -o ~/win-x64
-          dotnet publish NoitaMap/NoitaMap.csproj -r linux-x64 -p:PublishSingleFile=true --self-contained true -o ~/linux-x64
+          dotnet publish NoitaMap.Cli/NoitaMap.Cli.csproj -r win-x64 -p:PublishSingleFile=true --self-contained true -o ~/win-x64
+          dotnet publish NoitaMap.Cli/NoitaMap.Cli.csproj -r linux-x64 -p:PublishSingleFile=true --self-contained true -o ~/linux-x64
+          dotnet publish NoitaMap.Viewer/NoitaMapViewer.csproj -r win-x64 -p:PublishSingleFile=true --self-contained true -o ~/win-x64
+          dotnet publish NoitaMap.Viewer/NoitaMapViewer.csproj -r linux-x64 -p:PublishSingleFile=true --self-contained true -o ~/linux-x64
 
       - name: Upload windows artifacts
         uses: actions/upload-artifact@v4
