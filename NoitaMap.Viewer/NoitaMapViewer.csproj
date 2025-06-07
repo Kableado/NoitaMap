@@ -19,6 +19,10 @@
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.7" />
     <PackageReference Include="Veldrid.RenderDoc" Version="1.0.1" />
     <PackageReference Include="Vortice.Direct3D12" Version="3.7.3-beta" />
+    <PackageReference Include="Veldrid" Version="4.9.0" />
+    <PackageReference Include="Veldrid.SPIRV" Version="1.0.15" />
+    <PackageReference Include="Silk.NET.Windowing" Version="2.21.0" />
+    <PackageReference Include="Silk.NET.Input" Version="2.21.0" />
 
     <ProjectReference Include="../NoitaMap/NoitaMap.csproj" />
   </ItemGroup>
